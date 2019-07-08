@@ -89,7 +89,7 @@ public class ArmorStandEditMode {
             if (Math.toDegrees(axisValue) < 0)
                 axisValue = 360;
 
-            Method axisSetMethod = angle.getClass().getDeclaredMethod("set" + axis.toString(), Double.class);
+            Method axisSetMethod = angle.getClass().getDeclaredMethod("set" + axis.toString(), double.class);
             axisSetMethod.setAccessible(true);
 
             axisSetMethod.invoke(angle, axisValue);
