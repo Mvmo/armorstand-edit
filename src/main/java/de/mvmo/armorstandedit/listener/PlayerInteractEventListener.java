@@ -64,7 +64,7 @@ public class PlayerInteractEventListener implements Listener {
             method.setAccessible(true);
             double info = (double) method.invoke(eulerAngle);
 
-            player.sendTitle("", "§c" + axis.toString() + "§8 » §c" + Math.toDegrees(info));
+            player.sendTitle("", "§c" + axis.toString() + "§8 » §c" + Math.round(Math.toDegrees(info)));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException exception) {
             return;
         }
