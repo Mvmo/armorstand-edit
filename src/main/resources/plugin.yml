@@ -1,0 +1,8 @@
+name: ArmorStandEdit
+author: Mvmo
+version: 1.0
+main: de.mvmo.armorstandedit.ArmorStandEditPlugin
+commands:
+  armorstandedit:
+    aliases:
+      - ase
