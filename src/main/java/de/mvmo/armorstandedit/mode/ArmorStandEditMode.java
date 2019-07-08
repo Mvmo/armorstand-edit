@@ -36,8 +36,12 @@ public class ArmorStandEditMode {
     }
 
     public void applyInventory() {
+        player.getInventory().clear();
+
         if (armorStand == null) {
-            player.getInventory().setItem(0, new ItemStack(Material.STONE));
+            player.getInventory().setItem(0, new ItemStackBuilder(Material.ARMOR_STAND)
+                    .setDisplayName("§cCreate ArmorStand")
+                    .build());
             return;
         }
     }
