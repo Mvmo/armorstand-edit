@@ -16,7 +16,7 @@ public class EntityDamageEventListener implements Listener {
         ArmorStand armorStand = (ArmorStand) event.getEntity();
 
         ArmorStandEditMode.getEditModeList().stream()
-                .filter(edit -> edit.getArmorStand().equals(armorStand))
+                .filter(edit -> edit.getArmorStand() != null && edit.getArmorStand().equals(armorStand))
                 .findFirst()
                 .ifPresent(editMode -> {
                     ArmorStandEditMode.getEditModeList().remove(editMode);
