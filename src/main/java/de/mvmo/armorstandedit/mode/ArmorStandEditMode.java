@@ -78,7 +78,7 @@ public class ArmorStandEditMode {
             Method poseGetMethod = armorStand.getClass().getDeclaredMethod("get" + part.getFormattedName() + "Pose");
             poseGetMethod.setAccessible(true);
 
-            EulerAngle angle = (EulerAngle) poseGetMethod.invoke(armorStand);
+            EulerAngle angle = ((EulerAngle) poseGetMethod.invoke(armorStand)).add(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
 
             Method axisGetMethod = angle.getClass().getDeclaredMethod("get" + axis.toString());
             axisGetMethod.setAccessible(true);
@@ -92,7 +92,7 @@ public class ArmorStandEditMode {
             Method axisSetMethod = angle.getClass().getDeclaredMethod("set" + axis.toString(), double.class);
             axisSetMethod.setAccessible(true);
 
-            axisSetMethod.invoke(angle, axisValue);
+            angle = (EulerAngle) axisSetMethod.invoke(angle, axisValue);
 
             Method poseSetMethod = armorStand.getClass().getDeclaredMethod("set" + part.getFormattedName() + "Pose", EulerAngle.class);
             poseSetMethod.setAccessible(true);
