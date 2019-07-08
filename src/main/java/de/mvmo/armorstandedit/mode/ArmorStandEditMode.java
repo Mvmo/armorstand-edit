@@ -67,6 +67,10 @@ public class ArmorStandEditMode {
         player.getInventory().setItem(2, new ItemStackBuilder(TexturedSkullItem.create("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0="))
                 .setDisplayName("§cZ")
                 .build());
+
+        player.getInventory().setItem(6, new ItemStackBuilder(Material.PRISMARINE_SHARD)
+                .setDisplayName("§cChange Body Part §8(§7Currently §8» §7" + part.getFormattedName() + "§8)")
+                .build());
     }
 
     public EulerAngle executeRotation(Axis axis) {
