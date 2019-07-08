@@ -1,6 +1,8 @@
 package de.mvmo.armorstandedit.listener;
 
+import de.mvmo.armorstandedit.misc.Axis;
 import de.mvmo.armorstandedit.mode.ArmorStandEditMode;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -10,6 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.EulerAngle;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class PlayerInteractEventListener implements Listener {
 
@@ -43,6 +49,25 @@ public class PlayerInteractEventListener implements Listener {
             return;
         }
 
+        Axis axis;
+        try {
+            axis = Axis.valueOf(ChatColor.stripColor(item.getItemMeta().getDisplayName()).toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        EulerAngle eulerAngle = editMode.executeRotation(axis);
+        try {
+            Method method = eulerAngle.getClass().getDeclaredMethod("get" + axis.toString());
+            method.setAccessible(true);
+            double info = (double) method.invoke(eulerAngle);
+
+            player.sendTitle("", "§c" + axis.toString() + "§8 » §c" + Math.toDegrees(info));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException exception) {
+            return;
+        }
     }
 
 }
