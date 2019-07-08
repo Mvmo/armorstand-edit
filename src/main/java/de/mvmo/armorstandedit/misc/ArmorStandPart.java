@@ -17,7 +17,7 @@ public enum ArmorStandPart {
     private int index;
     private String formattedName;
 
-    private ArmorStandPart next() {
+    public ArmorStandPart next() {
         int index = this.index + 1;
         if (index + 1 > values().length)
             index = 0;
