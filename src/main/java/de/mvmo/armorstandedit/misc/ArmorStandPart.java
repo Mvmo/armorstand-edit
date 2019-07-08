@@ -14,4 +14,12 @@ public enum ArmorStandPart {
 
     private int index;
 
+    private ArmorStandPart next() {
+        int index = this.index + 1;
+        if (index + 1 > values().length)
+            index = 0;
+
+        return values()[index];
+    }
+
 }
