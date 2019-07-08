@@ -50,4 +50,7 @@ public class ArmorStandEditMode {
                 .orElse(null);
     }
 
+    public static List<ArmorStandEditMode> getEditModeList() {
+        return EDIT_MODE_LIST;
+    }
 }
