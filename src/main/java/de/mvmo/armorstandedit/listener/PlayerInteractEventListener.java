@@ -1,5 +1,6 @@
 package de.mvmo.armorstandedit.listener;
 
+import de.mvmo.armorstandedit.misc.ArmorStandPart;
 import de.mvmo.armorstandedit.misc.Axis;
 import de.mvmo.armorstandedit.mode.ArmorStandEditMode;
 import org.bukkit.ChatColor;
@@ -46,6 +47,11 @@ public class PlayerInteractEventListener implements Listener {
 
             event.setCancelled(true);
 
+            return;
+        }
+
+        if (item.getItemMeta().getDisplayName().startsWith("§cChange Body Part")) {
+            editMode.setPart(editMode.getPart().next());
             return;
         }
 
