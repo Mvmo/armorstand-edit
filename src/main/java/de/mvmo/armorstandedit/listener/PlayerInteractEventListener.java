@@ -52,6 +52,7 @@ public class PlayerInteractEventListener implements Listener {
 
         if (item.getItemMeta().getDisplayName().startsWith("§cChange Body Part")) {
             editMode.setPart(editMode.getPart().next());
+            editMode.applyInventory();
             return;
         }
 
