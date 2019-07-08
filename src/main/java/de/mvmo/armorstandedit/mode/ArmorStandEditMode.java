@@ -3,6 +3,7 @@ package de.mvmo.armorstandedit.mode;
 import com.google.common.collect.Lists;
 import de.mvmo.armorstandedit.misc.Axis;
 import de.mvmo.armorstandedit.util.ItemStackBuilder;
+import de.mvmo.armorstandedit.util.TexturedSkullItem;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,10 @@ public class ArmorStandEditMode {
         if (armorStand == null) {
             player.getInventory().setItem(0, new ItemStackBuilder(Material.ARMOR_STAND)
                     .setDisplayName("§cCreate ArmorStand")
+                    .build());
+
+            player.getInventory().setItem(4, new ItemStackBuilder(Material.STICK)
+                    .setDisplayName("§cSelect ArmorStand")
                     .build());
             return;
         }
