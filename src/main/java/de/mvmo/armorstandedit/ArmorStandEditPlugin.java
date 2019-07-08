@@ -1,6 +1,7 @@
 package de.mvmo.armorstandedit;
 
 import de.mvmo.armorstandedit.command.ArmorStandEditCommand;
+import de.mvmo.armorstandedit.listener.EntityDamageEventListener;
 import de.mvmo.armorstandedit.listener.PlayerInteractEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +15,8 @@ public class ArmorStandEditPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EntityDamageEventListener(), this);
+
         getCommand("armorstandedit").setExecutor(new ArmorStandEditCommand());
     }
 
