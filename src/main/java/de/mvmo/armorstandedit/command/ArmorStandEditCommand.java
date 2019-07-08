@@ -20,6 +20,13 @@ public class ArmorStandEditCommand implements CommandExecutor {
             return false;
         Player player = (Player) commandSender;
 
+        if (ArmorStandEditMode.isInEditMode(player)) {
+            ArmorStandEditMode.getEditModeList().remove(ArmorStandEditMode.editModeFromPlayer(player));
+
+            player.sendMessage("You've left the edit mode");
+            return false;
+        }
+
         if (args.length < 1) {
             ArmorStandEditMode.of(player).applyInventory();
 
