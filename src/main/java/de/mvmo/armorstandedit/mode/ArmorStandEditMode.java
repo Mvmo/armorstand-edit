@@ -1,8 +1,11 @@
 package de.mvmo.armorstandedit.mode;
 
 import com.google.common.collect.Lists;
+import de.mvmo.armorstandedit.util.ItemStackBuilder;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -10,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+@Setter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ArmorStandEditMode {
 
