@@ -73,10 +73,10 @@ public class ArmorStandEditMode {
                 .build());
     }
 
-    public EulerAngle executeRotation(Axis axis) {
-        int x = axis.equals(Axis.X) ? 5 : 0;
-        int y = axis.equals(Axis.Y) ? 5 : 0;
-        int z = axis.equals(Axis.Z) ? 5 : 0;
+    public EulerAngle executeRotation(Axis axis, int incrementBy) {
+        int x = axis.equals(Axis.X) ? incrementBy : 0;
+        int y = axis.equals(Axis.Y) ? incrementBy : 0;
+        int z = axis.equals(Axis.Z) ? incrementBy : 0;
 
         try {
             Method poseGetMethod = armorStand.getClass().getDeclaredMethod("get" + part.getFormattedName() + "Pose");
@@ -108,6 +108,10 @@ public class ArmorStandEditMode {
         }
 
         return new EulerAngle(0, 0, 0);
+    }
+
+    public EulerAngle executeRotation(Axis axis) {
+        return executeRotation(axis, 5);
     }
 
     public static boolean isInEditMode(Player player) {
