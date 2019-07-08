@@ -38,8 +38,11 @@ public class PlayerInteractEventListener implements Listener {
             editMode.setArmorStand(armorStand);
             editMode.applyInventory();
 
+            event.setCancelled(true);
+
             return;
         }
+
     }
 
 }
