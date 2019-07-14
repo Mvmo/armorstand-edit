@@ -28,7 +28,8 @@ public class AsyncPlayerChatEventListener implements Listener {
 
             Axis axis = Axis.valueOf(ChatColor.stripColor(event.getPlayer().getItemInHand().getItemMeta().getDisplayName()));
 
-            ArmorStandEditMode.editModeFromPlayer(event.getPlayer()).executeRotation(axis);
+            ArmorStandEditMode.editModeFromPlayer(event.getPlayer()).executeRotation(axis, degree, true);
+            event.setCancelled(true);
         } catch (IllegalArgumentException exception) {
         }
     }
