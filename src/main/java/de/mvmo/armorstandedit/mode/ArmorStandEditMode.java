@@ -73,25 +73,21 @@ public class ArmorStandEditMode {
                 .build());
     }
 
-    public EulerAngle executeRotation(Axis axis, int incrementBy) {
-        int x = axis.equals(Axis.X) ? incrementBy : 0;
-        int y = axis.equals(Axis.Y) ? incrementBy : 0;
-        int z = axis.equals(Axis.Z) ? incrementBy : 0;
-
+    public EulerAngle executeRotation(Axis axis, int value, boolean set) {
         try {
             Method poseGetMethod = armorStand.getClass().getDeclaredMethod("get" + part.getFormattedName() + "Pose");
             poseGetMethod.setAccessible(true);
 
-            EulerAngle angle = ((EulerAngle) poseGetMethod.invoke(armorStand)).add(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
+            EulerAngle angle = ((EulerAngle) poseGetMethod.invoke(armorStand));
 
             Method axisGetMethod = angle.getClass().getDeclaredMethod("get" + axis.toString());
             axisGetMethod.setAccessible(true);
 
-            double axisValue = (double) axisGetMethod.invoke(angle);
+            double axisValue = set ? Math.toRadians(value) : (double) axisGetMethod.invoke(angle) + Math.toRadians(value);
             if (Math.toDegrees(axisValue) > 360)
-                axisValue = 0;
+                axisValue = Math.toRadians(0);
             if (Math.toDegrees(axisValue) < 0)
-                axisValue = 360;
+                axisValue = Math.toRadians(360);
 
             Method axisSetMethod = angle.getClass().getDeclaredMethod("set" + axis.toString(), double.class);
             axisSetMethod.setAccessible(true);
@@ -111,7 +107,7 @@ public class ArmorStandEditMode {
     }
 
     public EulerAngle executeRotation(Axis axis) {
-        return executeRotation(axis, 5);
+        return executeRotation(axis, 5, false);
     }
 
     public static boolean isInEditMode(Player player) {
