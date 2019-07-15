@@ -27,17 +27,20 @@ public class PlayerInteractAtEntityEventListener implements Listener {
         if (item == null || item.getItemMeta() == null || item.getItemMeta().getDisplayName() == null || item.getType().equals(Material.AIR))
             return;
 
-        try {
+        if (ArmorStandEditMode.isInEditMode(player))
+            event.setCancelled(true);
+
+        /*try {
             Axis.valueOf(ChatColor.stripColor(item.getItemMeta().getDisplayName().toUpperCase()));
             event.setCancelled(true);
         } catch (IllegalArgumentException exception) {
-        }
+        }*/
 
         ArmorStandEditMode editMode = ArmorStandEditMode.editModeFromPlayer(player);
 
         if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cSelect ArmorStand")) {
             editMode.setArmorStand(armorStand);
-            editMode.applyInventory();
+            editMode.applyAxisEditInventory();
 
             event.setCancelled(true);
             return;

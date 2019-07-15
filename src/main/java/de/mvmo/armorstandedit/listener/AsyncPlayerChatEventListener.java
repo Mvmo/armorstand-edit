@@ -3,6 +3,7 @@ package de.mvmo.armorstandedit.listener;
 import de.mvmo.armorstandedit.misc.Axis;
 import de.mvmo.armorstandedit.mode.ArmorStandEditMode;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,15 +21,36 @@ public class AsyncPlayerChatEventListener implements Listener {
         if (item == null || item.getItemMeta() == null || item.getItemMeta().getDisplayName() == null || item.getType().equals(Material.AIR))
             return;
 
-        try {
-            int degree = Integer.valueOf(event.getMessage().split(" ")[0]);
+        ArmorStandEditMode editMode = ArmorStandEditMode.editModeFromPlayer(event.getPlayer());
 
-            if (degree > 360 || degree < 0)
+        try {
+            int input;
+            boolean add = event.getMessage().toLowerCase().startsWith("a");
+
+            if (add)
+                input = Integer.valueOf(event.getMessage().replaceFirst("a", "").split(" ")[0]);
+            else
+                input = Integer.valueOf(event.getMessage().split(" ")[0]);
+
+            if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cRotation")) {
+                Location location = editMode.getArmorStand().getLocation();
+                location.setYaw(add ? location.getYaw() + input : input);
+
+                editMode.getArmorStand().teleport(location);
                 return;
+            }
 
             Axis axis = Axis.valueOf(ChatColor.stripColor(event.getPlayer().getItemInHand().getItemMeta().getDisplayName()));
 
-            ArmorStandEditMode.editModeFromPlayer(event.getPlayer()).executeRotation(axis, degree, true);
+            if (editMode.isWhole()) {
+                editMode.executeMove(axis, input, !add);
+                return;
+            }
+
+            if (input > 360 || input < 0)
+                return;
+
+            ArmorStandEditMode.editModeFromPlayer(event.getPlayer()).executePartRotation(axis, input, !add);
             event.setCancelled(true);
         } catch (IllegalArgumentException exception) {
         }

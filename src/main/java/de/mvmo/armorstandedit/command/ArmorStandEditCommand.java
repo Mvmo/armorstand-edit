@@ -28,7 +28,7 @@ public class ArmorStandEditCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            ArmorStandEditMode.of(player).applyInventory();
+            ArmorStandEditMode.of(player).applyAxisEditInventory();
 
             player.sendMessage("You've entered the edit mode");
             return false;

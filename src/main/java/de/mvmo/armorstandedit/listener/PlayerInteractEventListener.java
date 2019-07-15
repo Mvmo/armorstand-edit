@@ -1,9 +1,9 @@
 package de.mvmo.armorstandedit.listener;
 
-import de.mvmo.armorstandedit.misc.ArmorStandPart;
 import de.mvmo.armorstandedit.misc.Axis;
 import de.mvmo.armorstandedit.mode.ArmorStandEditMode;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,16 +44,45 @@ public class PlayerInteractEventListener implements Listener {
             armorStand.setArms(true);
 
             editMode.setArmorStand(armorStand);
-            editMode.applyInventory();
+            editMode.applyAxisEditInventory();
 
             event.setCancelled(true);
 
             return;
         }
 
+        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cEdit whole ArmorStand")) {
+            editMode.applyWholeArmorStandEditInventory();
+            editMode.setWhole(true);
+            return;
+        }
+
+        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cEdit Axis")) {
+            editMode.applyAxisEditInventory();
+            editMode.setWhole(false);
+            return;
+        }
+
         if (item.getItemMeta().getDisplayName().startsWith("§cChange Body Part")) {
             editMode.setPart(editMode.getPart().next());
-            editMode.applyInventory();
+            editMode.applyAxisEditInventory();
+            return;
+        }
+
+        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cGUI")) {
+            editMode.openPropertiesInventory();
+            event.setCancelled(true);
+            return;
+        }
+
+        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§cRotation")) {
+            Location location = editMode.getArmorStand().getLocation();
+            location.setYaw(location.getYaw() + 5);
+
+            player.sendTitle("", "§cRot. §8» §c" + Math.round(location.getYaw()));
+
+            editMode.getArmorStand().teleport(location);
+            event.setCancelled(true);
             return;
         }
 
@@ -65,7 +95,12 @@ public class PlayerInteractEventListener implements Listener {
 
         event.setCancelled(true);
 
-        EulerAngle eulerAngle = editMode.executeRotation(axis);
+        if (editMode.isWhole()) {
+            editMode.executeMove(axis);
+            return;
+        }
+
+        EulerAngle eulerAngle = editMode.executePartRotation(axis);
         try {
             Method method = eulerAngle.getClass().getDeclaredMethod("get" + axis.toString());
             method.setAccessible(true);

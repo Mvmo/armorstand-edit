@@ -1,10 +1,7 @@
 package de.mvmo.armorstandedit;
 
 import de.mvmo.armorstandedit.command.ArmorStandEditCommand;
-import de.mvmo.armorstandedit.listener.AsyncPlayerChatEventListener;
-import de.mvmo.armorstandedit.listener.EntityDamageEventListener;
-import de.mvmo.armorstandedit.listener.PlayerInteractAtEntityEventListener;
-import de.mvmo.armorstandedit.listener.PlayerInteractEventListener;
+import de.mvmo.armorstandedit.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +17,7 @@ public class ArmorStandEditPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityDamageEventListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InventoryClickEventListener(), this);
 
         getCommand("armorstandedit").setExecutor(new ArmorStandEditCommand());
     }

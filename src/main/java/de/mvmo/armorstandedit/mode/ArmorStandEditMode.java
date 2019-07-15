@@ -9,9 +9,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.util.EulerAngle;
 
 import java.lang.reflect.Method;
@@ -32,17 +35,19 @@ public class ArmorStandEditMode {
 
     private ArmorStand armorStand;
     private ArmorStandPart part;
+    private boolean whole;
 
     public static ArmorStandEditMode of(Player player) {
         ArmorStandEditMode editMode = new ArmorStandEditMode(player);
 
         editMode.part = ArmorStandPart.HEAD;
+        editMode.whole = false;
         EDIT_MODE_LIST.add(editMode);
 
         return editMode;
     }
 
-    public void applyInventory() {
+    public void applyAxisEditInventory() {
         player.getInventory().clear();
 
         if (armorStand == null) {
@@ -56,6 +61,36 @@ public class ArmorStandEditMode {
             return;
         }
 
+        applyAxisItems();
+
+        player.getInventory().setItem(6, new ItemStackBuilder(Material.PRISMARINE_SHARD)
+                .setDisplayName("§cChange Body Part §8(§7Currently §8» §7" + part.getFormattedName() + "§8)")
+                .build());
+
+        player.getInventory().setItem(8, new ItemStackBuilder(Material.REDSTONE_TORCH_ON)
+                .setDisplayName("§cEdit whole ArmorStand")
+                .build());
+    }
+
+    public void applyWholeArmorStandEditInventory() {
+        player.getInventory().clear();
+
+        applyAxisItems();
+
+        player.getInventory().setItem(3, new ItemStackBuilder(TexturedSkullItem.create("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVjZWQ5OTMxYWNlMjNhZmMzNTEzNzEzNzliZjA1YzYzNWFkMTg2OTQzYmMxMzY0NzRlNGU1MTU2YzRjMzcifX19"))
+                .setDisplayName("§cRotation")
+                .build());
+
+        player.getInventory().setItem(6, new ItemStackBuilder(Material.CHEST)
+                .setDisplayName("§cGUI")
+                .build());
+
+        player.getInventory().setItem(8, new ItemStackBuilder(Material.REDSTONE_TORCH_ON)
+                .setDisplayName("§cEdit Axis")
+                .build());
+    }
+
+    private void applyAxisItems() {
         player.getInventory().setItem(0, new ItemStackBuilder(TexturedSkullItem.create("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19"))
                 .setDisplayName("§cX")
                 .build());
@@ -67,13 +102,23 @@ public class ArmorStandEditMode {
         player.getInventory().setItem(2, new ItemStackBuilder(TexturedSkullItem.create("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0="))
                 .setDisplayName("§cZ")
                 .build());
-
-        player.getInventory().setItem(6, new ItemStackBuilder(Material.PRISMARINE_SHARD)
-                .setDisplayName("§cChange Body Part §8(§7Currently §8» §7" + part.getFormattedName() + "§8)")
-                .build());
     }
 
-    public EulerAngle executeRotation(Axis axis, int value, boolean set) {
+    public void openPropertiesInventory() {
+        Inventory inventory = Bukkit.createInventory(null, 4 * 9, "§cArmorStandEdit §8» §cGUI");
+
+        inventory.setItem(0, new ItemStackBuilder(Material.DAYLIGHT_DETECTOR)
+                .setDisplayName("§cSize §8» §e" + (armorStand.isSmall() ? "Small" : "Tall"))
+                .build());
+
+        inventory.setItem(1, new ItemStackBuilder(Material.GLASS_BOTTLE)
+                .setDisplayName("§cVisibility §8» §e" + (armorStand.isVisible() ? "Visible" : "Invisible"))
+                .build());
+
+        player.openInventory(inventory);
+    }
+
+    public EulerAngle executePartRotation(Axis axis, int value, boolean set) {
         try {
             Method poseGetMethod = armorStand.getClass().getDeclaredMethod("get" + part.getFormattedName() + "Pose");
             poseGetMethod.setAccessible(true);
@@ -106,8 +151,37 @@ public class ArmorStandEditMode {
         return new EulerAngle(0, 0, 0);
     }
 
-    public EulerAngle executeRotation(Axis axis) {
-        return executeRotation(axis, 5, false);
+    public EulerAngle executePartRotation(Axis axis) {
+        return executePartRotation(axis, 5, false);
+    }
+
+    public void executeMove(Axis axis, double value, boolean set) {
+        double x = axis == Axis.X ? value : (set ? armorStand.getLocation().getX() : 0);
+        double y = axis == Axis.Y ? value : (set ? armorStand.getLocation().getY() : 0);
+        double z = axis == Axis.Z ? value : (set ? armorStand.getLocation().getZ() : 0);
+
+        if (player.isSneaking()) {
+            x = -x;
+            y = -y;
+            z = -z;
+        }
+
+        if (set) {
+            Location location = armorStand.getLocation();
+
+            location.setX(x);
+            location.setY(y);
+            location.setZ(z);
+
+            armorStand.teleport(location);
+            return;
+        }
+
+        armorStand.teleport(armorStand.getLocation().add(x, y, z));
+    }
+
+    public void executeMove(Axis axis) {
+        executeMove(axis, 0.1, false);
     }
 
     public static boolean isInEditMode(Player player) {
